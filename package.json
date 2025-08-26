@@ -1,0 +1,25 @@
+{
+  "name": "query-wise-backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "tsx src/server.ts",
+    "dev": "tsx watch src/server.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "@fastify/cors": "^11.1.0",
+    "dotenv": "^17.2.1",
+    "fastify": "^5.5.0",
+    "fastify-type-provider-zod": "^5.0.3",
+    "zod": "^4.1.3"
+  }
+}
