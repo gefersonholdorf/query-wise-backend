@@ -1,0 +1,9 @@
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: query
+      POSTGRES_PASSWORD: wise
+      POSTGRES_DB: querywise
+    ports:
+      - "5432:5432"

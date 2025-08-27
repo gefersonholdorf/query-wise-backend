@@ -22,9 +22,9 @@ A empresa de tecnologia possui um canal de suporte ao cliente via WhatsApp, aten
             - [ ] GET /messages/:clientId → listar histórico de mensagens de um cliente.
 
         - RAG / Base de Conhecimento
-            - [ ] POST /knowledge → adicionar um problema e sua solução na base de conhecimento (texto + embeddings).
+            - [I] POST /knowledge → adicionar um problema e sua solução na base de conhecimento (texto + embeddings).
             - [ ] GET /knowledge/search?query=... → retornar problemas similares a uma pergunta usando busca semântica.
-            - [ ] POST /responses → endpoint que recebe mensagem de cliente, consulta a base RAG e decide:
+            - [I] POST /knowledge/match → endpoint que recebe mensagem de cliente, consulta a base RAG e decide:
             Se existir problema semelhante → retorna a resposta da base.
             Caso contrário → Avisa um atendente ou não faz nenhuma ação
 

@@ -1,15 +1,23 @@
 import fastifyCors from "@fastify/cors";
-import fastify from "fastify";
+import { fastify } from "fastify";
 import { env } from "./env";
-import type { ZodTypeProvider } from "fastify-type-provider-zod";
 import { httpCreateRoute } from "./http/http";
+import {
+    serializerCompiler,
+	validatorCompiler,
+} from "fastify-type-provider-zod";
+import z from "zod/v4";
+import { ZodTypeProvider } from "fastify-type-provider-zod";
 
-const app = fastify().withTypeProvider<ZodTypeProvider>()
+const app = fastify().withTypeProvider<ZodTypeProvider>();
 
-app.register(fastifyCors)
+app.setValidatorCompiler(validatorCompiler);
+app.setSerializerCompiler(serializerCompiler);
 
-httpCreateRoute(app)
+app.register(fastifyCors);
+
+httpCreateRoute(app);
 
 app.listen({
-    port: env.PORT
-})
+	port: env.PORT,
+});
