@@ -11,17 +11,17 @@ export const createKnowledgeRoute: FastifyPluginCallbackZod = (app) => {
 		{
 			schema: {
 				body: z.object({
-					question: z.string(),
-					answer: z.string(),
+					problem: z.string(),
+					soluction: z.string(),
 				}),
 			},
 		},
 		async (request, reply) => {
-			const { question, answer } = request.body;
+			const { problem, soluction } = request.body;
 
 			const serviceResponse = await createKnowledgeService.execute({
-				question,
-				answer,
+				problem,
+				soluction,
 			});
 
 			if (serviceResponse.isLeft()) {

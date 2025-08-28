@@ -15,17 +15,44 @@ datasource db {
 
 model KnowledgeBase {
   id        Int      @id @default(autoincrement())
-  question  String
-  answer    String
+  problem  String
+  soluction  String   @db.Text
   embedding Float[]
 
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @default(now()) @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  tags KnowledgeBaseTag[]
 
   @@map("knowledge_base")
 }
 
-model Message {
+model KnowledgeBaseTag {
+  knowledgeBaseId Int
+  tagId           Int
+
+  knowledgeBase KnowledgeBase @relation(fields: [knowledgeBaseId], references: [id])
+  tag           Tag           @relation(fields: [tagId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@id([knowledgeBaseId, tagId])
+  @@map("knowledge_base_tags")
+}
+
+model Tag {
+  id        Int      @id @default(autoincrement())
+  name      String
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  knowledges KnowledgeBaseTag[]
+
+  @@map("tags")
+}
+
+model Messages {
   id          Int      @id @default(autoincrement())
   clientName    String   @map("client_name")
   clientPhone    String   @map("client_phone")

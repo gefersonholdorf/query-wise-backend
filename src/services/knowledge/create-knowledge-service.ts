@@ -4,8 +4,8 @@ import { ollamaEmbeddingService } from "../ollama-embedding";
 import type { Service } from "../service";
 
 export interface CreateKnowledgeServiceRequest {
-	question: string;
-	answer: string;
+	problem: string;
+	soluction: string;
 }
 
 export type CreateKnowledgeServiceResponse = Either<
@@ -20,14 +20,14 @@ export class CreateKnowledgeService
 	async execute(
 		request: CreateKnowledgeServiceRequest,
 	): Promise<CreateKnowledgeServiceResponse> {
-		const { question, answer } = request;
+		const { problem, soluction } = request;
 
-		const embedding = await ollamaEmbeddingService(question);
+		const embedding = await ollamaEmbeddingService(problem);
 
 		const createKnowledge = await prisma.knowledgeBase.create({
 			data: {
-				question,
-				answer,
+				problem,
+				soluction,
 				embedding,
 			},
 		});
