@@ -31,7 +31,7 @@ model KnowledgeBaseTag {
   knowledgeBaseId Int
   tagId           Int
 
-  knowledgeBase KnowledgeBase @relation(fields: [knowledgeBaseId], references: [id])
+  knowledgeBase KnowledgeBase @relation(fields: [knowledgeBaseId], references: [id], onDelete: Cascade)
   tag           Tag           @relation(fields: [tagId], references: [id])
 
   createdAt DateTime @default(now()) @map("created_at")

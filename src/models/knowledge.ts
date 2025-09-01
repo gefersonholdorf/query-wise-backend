@@ -1,10 +1,8 @@
-import type { Tag } from "./tag";
-
 export interface Knowledge {
 	id: number;
 	problem: string;
 	soluction: string;
-	tags: Tag[];
+	tags: number[];
 	embedding: number[];
 	createdAt: Date;
 	updatedAt: Date;
