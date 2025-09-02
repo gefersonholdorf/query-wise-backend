@@ -5,7 +5,6 @@ import {
 	validatorCompiler,
 	type ZodTypeProvider,
 } from "fastify-type-provider-zod";
-import z from "zod/v4";
 import { env } from "./env";
 import { httpCreateRoute } from "./http/http";
 

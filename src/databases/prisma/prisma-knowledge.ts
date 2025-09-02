@@ -2,6 +2,7 @@ import { prisma } from "@/databases/db";
 import type {
 	KnowledgeParams,
 	KnowledgeRepository,
+	UpdateKnowledgeDTO,
 } from "@/databases/repositories/knowledges-repository";
 import type { Knowledge } from "@/models/knowledge";
 import type { Tag } from "@/models/tag";
@@ -111,6 +112,39 @@ export class PrismaKnowledgeRepository implements KnowledgeRepository {
 
 		return {
 			knowledgeId: deletedKnowledge.id,
+		};
+	}
+
+	async update(
+		updateKnowledge: UpdateKnowledgeDTO,
+	): Promise<{ knowledgeId: number } | null> {
+		const { id, problem, soluction, embedding } = updateKnowledge;
+
+		const knowledge = await prisma.knowledgeBase.findUnique({
+			where: {
+				id,
+			},
+		});
+
+		if (!knowledge) {
+			return null;
+		}
+
+		const knowledgeEdit = await prisma.knowledgeBase.update({
+			data: {
+				problem,
+				soluction,
+				embedding,
+			},
+			where: {
+				id,
+			},
+		});
+
+		const { id: knowledgeId } = knowledgeEdit;
+
+		return {
+			knowledgeId,
 		};
 	}
 }

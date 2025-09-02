@@ -18,8 +18,14 @@ export type FetchKnowledgesDTO = (Omit<
 	tags: Omit<Tag, "updatedAt" | "createdAt">[];
 })[];
 
+export type UpdateKnowledgeDTO = Omit<
+	Knowledge,
+	"updatedAt" | "createdAt" | "tags"
+>;
+
 export interface KnowledgeRepository {
 	create(data: CreateKnowledgeDTO): Promise<{ knowledgeId: number }>;
 	getAll(params: KnowledgeParams): Promise<FetchKnowledgesDTO>;
 	delete(id: number): Promise<{ knowledgeId: number } | null>;
+	update(data: UpdateKnowledgeDTO): Promise<{ knowledgeId: number } | null>;
 }
