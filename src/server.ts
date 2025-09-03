@@ -1,6 +1,10 @@
 import fastifyCors from "@fastify/cors";
+import fastifySwagger from "@fastify/swagger";
+import fastifySwaggerUi from "@fastify/swagger-ui";
 import { fastify } from "fastify";
 import {
+	jsonSchemaTransform,
+	jsonSchemaTransformObject,
 	serializerCompiler,
 	validatorCompiler,
 	type ZodTypeProvider,
@@ -12,6 +16,23 @@ const app = fastify().withTypeProvider<ZodTypeProvider>();
 
 app.setValidatorCompiler(validatorCompiler);
 app.setSerializerCompiler(serializerCompiler);
+
+app.register(fastifySwagger, {
+	openapi: {
+		openapi: "3.0.0",
+		info: {
+			title: "QueryWise",
+			description: "Documentação oficial da aplicação QueryWise",
+			version: "1.0.0",
+		},
+	},
+	transform: jsonSchemaTransform,
+	transformObject: jsonSchemaTransformObject,
+});
+
+app.register(fastifySwaggerUi, {
+	routePrefix: "/docs",
+});
 
 app.register(fastifyCors, {
 	origin: true,

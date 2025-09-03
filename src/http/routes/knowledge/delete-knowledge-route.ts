@@ -11,9 +11,22 @@ export const deleteKnowledgeRoute: FastifyPluginCallbackZod = async (app) => {
 		"/knowledges/:id",
 		{
 			schema: {
+				summary: "Responsável por deletar um conhecimento",
+				tags: ["Knowledges"],
+				description:
+					"Este endpoint permite remover um conhecimento através do id.",
 				params: z.object({
 					id: z.coerce.number(),
 				}),
+				response: {
+					204: z.object({}),
+					400: z.object({
+						message: z.string(),
+					}),
+					404: z.object({
+						message: z.string(),
+					}),
+				},
 			},
 		},
 		async (request, reply) => {

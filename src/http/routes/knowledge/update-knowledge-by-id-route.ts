@@ -11,6 +11,10 @@ export const updateKnowledgeByIdRoute: FastifyPluginCallbackZod = (app) => {
 		"/knowledges/:id",
 		{
 			schema: {
+				summary: "Responsável por atualizar um conhecimento",
+				description:
+					"Este endpoint permite atualizar os campos (problema e solução) de um conhecimento através do id.",
+				tags: ["Knowledges"],
 				params: z.object({
 					id: z.coerce.number(),
 				}),
@@ -18,6 +22,15 @@ export const updateKnowledgeByIdRoute: FastifyPluginCallbackZod = (app) => {
 					problem: z.string().min(1),
 					soluction: z.string().min(1),
 				}),
+				response: {
+					204: z.object({}),
+					400: z.object({
+						message: z.string(),
+					}),
+					404: z.object({
+						message: z.string(),
+					}),
+				},
 			},
 		},
 		async (request, reply) => {

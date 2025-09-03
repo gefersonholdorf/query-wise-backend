@@ -10,11 +10,23 @@ export const createKnowledgeRoute: FastifyPluginCallbackZod = (app) => {
 		"/knowledges",
 		{
 			schema: {
+				tags: ["Knowledges"],
+				summary: "Responsável por criar um conhecimento",
+				description:
+					"Este endpoint permite criar um novo conhecimento. É necessário informar os dados obrigatórios (problema, solução e as tags).",
 				body: z.object({
 					problem: z.string(),
 					soluction: z.string(),
 					tags: z.array(z.number()).min(1),
 				}),
+				response: {
+					201: z.object({
+						knowledgeId: z.number(),
+					}),
+					400: z.object({
+						message: z.string(),
+					}),
+				},
 			},
 		},
 		async (request, reply) => {

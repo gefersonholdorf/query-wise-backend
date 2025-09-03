@@ -9,9 +9,21 @@ export const createTagRoute: FastifyPluginCallbackZod = async (app) => {
 		"/tags",
 		{
 			schema: {
+				tags: ["Tags"],
+				summary: "Responsável por criar uma tag",
+				description:
+					"Este endpoint permite criar uma nova tag no sistema. É necessário informar os dados obrigatórios (nome).",
 				body: z.object({
 					name: z.string(),
 				}),
+				response: {
+					201: z.object({
+						tagId: z.number(),
+					}),
+					400: z.object({
+						message: z.string(),
+					}),
+				},
 			},
 		},
 		async (request, reply) => {

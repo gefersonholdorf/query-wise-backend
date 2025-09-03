@@ -9,10 +9,35 @@ export const fetchKnowledgeRoute: FastifyPluginCallbackZod = (app) => {
 		"/knowledges",
 		{
 			schema: {
+				summary: "Responsável por listar os conhecimentos",
+				tags: ["Knowledges"],
+				description:
+					"Este endpoint permite listar os conhecimentos através do (search e tagId).",
 				querystring: z.object({
 					search: z.string().optional(),
 					tagId: z.coerce.number().optional(),
 				}),
+				response: {
+					200: z.object({
+						data: z.array(
+							z.object({
+								id: z.number(),
+								problem: z.string(),
+								soluction: z.string(),
+								createdAt: z.date(),
+								tags: z.array(
+									z.object({
+										id: z.number(),
+										name: z.string(),
+									}),
+								),
+							}),
+						),
+					}),
+					400: z.object({
+						message: z.string(),
+					}),
+				},
 			},
 		},
 		async (request, reply) => {
