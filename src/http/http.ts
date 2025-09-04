@@ -1,4 +1,6 @@
 import type { FastifyInstance } from "fastify";
+import { generateQRCodeRoute } from "./routes/bot/generate-qr-code-route";
+import { logoutWhatsappRoute } from "./routes/bot/logout-whatsapp-route";
 import { healthRoute } from "./routes/health";
 import { createKnowledgeRoute } from "./routes/knowledge/create-knowledge-route";
 import { deleteKnowledgeRoute } from "./routes/knowledge/delete-knowledge-route";
@@ -20,6 +22,9 @@ export function httpCreateRoute(app: FastifyInstance) {
 
 			instance.register(createTagRoute);
 			instance.register(fetchTagsRoute);
+
+			instance.register(generateQRCodeRoute);
+			instance.register(logoutWhatsappRoute);
 		},
 		{
 			prefix: "/api/v1",
