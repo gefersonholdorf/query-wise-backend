@@ -7,3 +7,26 @@ services:
       POSTGRES_DB: querywise
     ports:
       - "5432:5432"
+
+  evolution:
+    restart: always
+    container_name: evolution
+    image: atendai/evolution-api:v1.8.2
+    ports:
+      - "127.0.0.1:7171:8080"
+    environment:
+      - AUTHENTICATION_API_KEY=querywise
+    networks:
+      - appnet
+
+  backend:
+    build: ./
+    container_name: backend
+    ports:
+      - "3398:3398"
+    networks:
+      - appnet
+
+networks:
+  appnet:
+    driver: bridge

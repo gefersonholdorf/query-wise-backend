@@ -7,6 +7,7 @@ import { deleteKnowledgeRoute } from "./routes/knowledge/delete-knowledge-route"
 import { fetchKnowledgeRoute } from "./routes/knowledge/fetch-knowledges-route";
 import { matchKnowledgeRoute } from "./routes/knowledge/match-knowledge-route";
 import { updateKnowledgeByIdRoute } from "./routes/knowledge/update-knowledge-by-id-route";
+import { newMessageRoute } from "./routes/messages/new-message";
 import { createTagRoute } from "./routes/tags/create-tag-route";
 import { fetchTagsRoute } from "./routes/tags/fetch-tags-route";
 
@@ -25,6 +26,8 @@ export function httpCreateRoute(app: FastifyInstance) {
 
 			instance.register(generateQRCodeRoute);
 			instance.register(logoutWhatsappRoute);
+
+			instance.register(newMessageRoute);
 		},
 		{
 			prefix: "/api/v1",
