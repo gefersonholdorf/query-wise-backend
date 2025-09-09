@@ -19,16 +19,15 @@ export const matchKnowledgeRoute: FastifyPluginCallbackZod = (app) => {
 				}),
 				response: {
 					200: z.object({
-						bestMatchs: z.array(
-							z.object({
-								id: z.number(),
-								problem: z.string(),
-								soluction: z.string(),
-								similarity: z.number(),
-							}),
-						),
+						bestMatch: z.object({
+							id: z.string(),
+							version: z.number(),
+							score: z.number(),
+							problem: z.string(),
+							solution: z.string(),
+						}),
 					}),
-					400: z.object({
+					500: z.object({
 						message: z.string(),
 					}),
 				},
@@ -43,13 +42,21 @@ export const matchKnowledgeRoute: FastifyPluginCallbackZod = (app) => {
 
 			if (serviceResponse.isLeft()) {
 				return reply
-					.status(400)
+					.status(500)
 					.send({ message: "Erro ao obter as correspondências." });
 			}
 
-			const { bestMatchs } = serviceResponse.value;
+			const { bestMatch } = serviceResponse.value;
 
-			return reply.status(200).send({ bestMatchs });
+			return reply.status(200).send({
+				bestMatch: {
+					id: String(bestMatch.id),
+					version: bestMatch.version,
+					score: bestMatch.score,
+					problem: bestMatch.payload.problem,
+					solution: bestMatch.payload.solution,
+				},
+			});
 		},
 	);
 };

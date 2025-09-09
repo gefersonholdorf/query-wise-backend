@@ -1,37 +1,40 @@
-import { PrismaKnowledgeRepository } from "@/databases/prisma/prisma-knowledge";
+import { QdrantKnowledgeBase } from "@/databases/qdrant/qdrant-knowledge-base";
 import { type Either, right } from "../../helpers/either";
-import { ollamaEmbeddingService } from "../ollama-embedding";
+import { ollamaEmbeddingService } from "../ollama/ollama-embedding";
 import type { Service } from "../service";
 
 export interface CreateKnowledgeServiceRequest {
 	problem: string;
-	soluction: string;
-	tags: number[];
+	solution: string;
 }
 
 export type CreateKnowledgeServiceResponse = Either<
 	never,
-	{ knowledgeId: number }
+	{ knowledgeId: string }
 >;
 
 export class CreateKnowledgeService
 	implements
 		Service<CreateKnowledgeServiceRequest, CreateKnowledgeServiceResponse>
 {
-	knowledgeRepository = new PrismaKnowledgeRepository();
+	knowledgeRepository = new QdrantKnowledgeBase();
 
 	async execute(
 		request: CreateKnowledgeServiceRequest,
 	): Promise<CreateKnowledgeServiceResponse> {
-		const { problem, soluction, tags } = request;
+		const { problem, solution } = request;
 
 		const embedding = await ollamaEmbeddingService(problem);
 
+		const id = crypto.randomUUID();
+
 		const newKnowledge = await this.knowledgeRepository.create({
-			problem,
-			soluction,
-			tags,
-			embedding,
+			id,
+			vector: embedding,
+			payload: {
+				problem,
+				solution,
+			},
 		});
 
 		const { knowledgeId } = newKnowledge;

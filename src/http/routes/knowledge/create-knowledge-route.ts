@@ -13,34 +13,32 @@ export const createKnowledgeRoute: FastifyPluginCallbackZod = (app) => {
 				tags: ["Knowledges"],
 				summary: "Responsável por criar um conhecimento",
 				description:
-					"Este endpoint permite criar um novo conhecimento. É necessário informar os dados obrigatórios (problema, solução e as tags).",
+					"Este endpoint permite criar um novo conhecimento. É necessário informar os dados obrigatórios (problema, solução).",
 				body: z.object({
 					problem: z.string(),
-					soluction: z.string(),
-					tags: z.array(z.number()).min(1),
+					solution: z.string(),
 				}),
 				response: {
 					201: z.object({
-						knowledgeId: z.number(),
+						knowledgeId: z.string(),
 					}),
-					400: z.object({
+					500: z.object({
 						message: z.string(),
 					}),
 				},
 			},
 		},
 		async (request, reply) => {
-			const { problem, soluction, tags } = request.body;
+			const { problem, solution } = request.body;
 
 			const serviceResponse = await createKnowledgeService.execute({
 				problem,
-				soluction,
-				tags,
+				solution,
 			});
 
 			if (serviceResponse.isLeft()) {
 				return reply
-					.status(400)
+					.status(500)
 					.send({ message: "Erro ao criar o conhecimento." });
 			}
 

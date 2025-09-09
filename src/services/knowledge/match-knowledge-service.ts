@@ -1,8 +1,7 @@
-import type { KnowledgeBase } from "@prisma/client";
-import { prisma } from "@/databases/db";
-import { cosineSimilarity } from "@/helpers/cosineSimilarity";
+import { QdrantKnowledgeBase } from "@/databases/qdrant/qdrant-knowledge-base";
+import type { KnowledgeBaseResult } from "@/models/knowledge";
 import { type Either, right } from "../../helpers/either";
-import { ollamaEmbeddingService } from "../ollama-embedding";
+import { ollamaEmbeddingService } from "../ollama/ollama-embedding";
 import type { Service } from "../service";
 
 export interface MatchKnowledgeServiceRequest {
@@ -11,20 +10,15 @@ export interface MatchKnowledgeServiceRequest {
 
 export type MatchKnowledgeServiceResponse = Either<
 	never,
-	{ bestMatchs: BestMatch[] }
+	{ bestMatch: KnowledgeBaseResult }
 >;
-
-interface BestMatch {
-	id: number;
-	problem: string;
-	soluction: string;
-	similarity: number;
-}
 
 export class MatchKnowledgeService
 	implements
 		Service<MatchKnowledgeServiceRequest, MatchKnowledgeServiceResponse>
 {
+	knowledgeRepository = new QdrantKnowledgeBase();
+
 	async execute(
 		request: MatchKnowledgeServiceRequest,
 	): Promise<MatchKnowledgeServiceResponse> {
@@ -32,23 +26,14 @@ export class MatchKnowledgeService
 
 		const embedding = await ollamaEmbeddingService(message);
 
-		const knowledges: KnowledgeBase[] = await prisma.knowledgeBase.findMany();
+		const result = await this.knowledgeRepository.searchMatch(embedding);
 
-		const results = knowledges.map((knowledge: KnowledgeBase) => {
-			return {
-				id: knowledge.id,
-				problem: knowledge.problem,
-				soluction: knowledge.soluction,
-				similarity: cosineSimilarity(embedding, knowledge.embedding),
-			};
-		});
-
-		results.sort((a, b) => b.similarity - a.similarity);
-
-		const bestMatchs: BestMatch[] = results.filter((r) => r.similarity >= 0.8);
+		const response = result.data
+			.filter((item) => item.score >= 0.8)
+			.sort((a, b) => b.score - a.score);
 
 		return right({
-			bestMatchs,
+			bestMatch: response[0],
 		});
 	}
 }

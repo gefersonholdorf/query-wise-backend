@@ -1,69 +1,19 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
-model KnowledgeBase {
-  id        Int      @id @default(autoincrement())
-  problem  String
-  soluction  String   @db.Text
-  embedding Float[]
-
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @map("updated_at")
-
-  tags KnowledgeBaseTag[]
-
-  @@map("knowledge_base")
-}
-
-model KnowledgeBaseTag {
-  knowledgeBaseId Int
-  tagId           Int
-
-  knowledgeBase KnowledgeBase @relation(fields: [knowledgeBaseId], references: [id], onDelete: Cascade)
-  tag           Tag           @relation(fields: [tagId], references: [id])
-
-  createdAt DateTime @default(now()) @map("created_at")
-
-  @@id([knowledgeBaseId, tagId])
-  @@map("knowledge_base_tags")
-}
-
-model Tag {
-  id        Int      @id @default(autoincrement())
-  name      String
-
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @map("updated_at")
-
-  knowledges KnowledgeBaseTag[]
-
-  @@map("tags")
-}
-
-model Sessions {
-  id          Int      @id @default(autoincrement())
-  @@map("sessions")
-}
-
-model Messages {
-  id          Int      @id @default(autoincrement())
-  clientName    String   @map("client_name")
-  clientPhone    String   @map("client_phone")
-  messageText String   @map("message_text")
-
-  createdAt   DateTime @default(now()) @map("created_at")
-
-  @@map("messages")
+model users {
+  id         Int       @id @default(autoincrement())
+  name       String    @db.VarChar(255)
+  email      String    @unique(map: "email") @db.VarChar(255)
+  cpf        String    @unique(map: "cpf") @db.VarChar(14)
+  password   String    @db.VarChar(255)
+  is_active  Boolean?  @default(true)
+  created_at DateTime? @default(now()) @db.Timestamp(0)
+  updated_at DateTime? @default(now()) @db.Timestamp(0)
 }

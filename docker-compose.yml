@@ -1,29 +1,45 @@
-services:
-  postgres:
-    image: postgres:15
-    environment:
-      POSTGRES_USER: query
-      POSTGRES_PASSWORD: wise
-      POSTGRES_DB: querywise
-    ports:
-      - "5432:5432"
+version: "3.9"
 
-  evolution:
-    restart: always
-    container_name: evolution
-    image: atendai/evolution-api:v1.8.2
-    ports:
-      - "127.0.0.1:7171:8080"
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: qw_mysql
+    restart: unless-stopped
     environment:
-      - AUTHENTICATION_API_KEY=querywise
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: querywise
+      MYSQL_USER: query
+      MYSQL_PASSWORD: wise
+    ports:
+      - "3306:3306"
+    # volumes:
+    #   - ./mysql_data:/var/lib/mysql
     networks:
       - appnet
 
-  backend:
-    build: ./
-    container_name: backend
+  evolution:
+    image: atendai/evolution-api:v1.8.2
+    container_name: qw_evolution
+    restart: unless-stopped
+    environment:
+      AUTHENTICATION_API_KEY: querywise
     ports:
-      - "3398:3398"
+      - "7171:8080"
+    networks:
+      - appnet
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: qw_qdrant
+    restart: unless-stopped
+    environment:
+      QDRANT__SERVICE__GRPC_PORT: 6334
+      QDRANT__SERVICE__HTTP_PORT: 6333
+    ports:
+      - "6333:6333"   # REST API
+      - "6334:6334"   # gRPC API
+    # volumes:
+    #   - ./qdrant_storage:/qdrant/storage
     networks:
       - appnet
 

@@ -8,6 +8,7 @@ const envSchema = z.object({
 	EVOLUTION_URL: z.url(),
 	EVOLUTION_INSTANCE_NAME: z.string(),
 	EVOLUTION_APIKEY: z.string(),
+	QDRANT_URL: z.url(),
 });
 
 export const env = envSchema.parse(process.env);
