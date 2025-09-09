@@ -8,6 +8,8 @@ import { createKnowledgeRoute } from "./routes/knowledge/create-knowledge-route"
 import { matchKnowledgeRoute } from "./routes/knowledge/match-knowledge-route";
 // import { updateKnowledgeByIdRoute } from "./routes/knowledge/update-knowledge-by-id-route";
 import { newMessageRoute } from "./routes/messages/new-message";
+import { createUserRoute } from "./routes/user/create-user-route";
+import { fetchUsersRoute } from "./routes/user/fetch-users-route";
 
 export function httpCreateRoute(app: FastifyInstance) {
 	app.register(
@@ -23,6 +25,9 @@ export function httpCreateRoute(app: FastifyInstance) {
 			instance.register(logoutWhatsappRoute);
 
 			instance.register(newMessageRoute);
+
+			instance.register(createUserRoute);
+			instance.register(fetchUsersRoute);
 		},
 		{
 			prefix: "/api/v1",
