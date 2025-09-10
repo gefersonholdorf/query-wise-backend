@@ -1,6 +1,7 @@
 import type { FastifyPluginCallbackZod } from "fastify-type-provider-zod";
 import z from "zod/v4";
 import { ExistingEntityError } from "@/errors/existing-entity-error";
+import { authenticate } from "@/middlewares/autenticate";
 import { CreateUserService } from "@/services/user/create-user-service";
 
 export const createUserRoute: FastifyPluginCallbackZod = (app) => {
@@ -9,6 +10,7 @@ export const createUserRoute: FastifyPluginCallbackZod = (app) => {
 	app.post(
 		"/users",
 		{
+			preHandler: authenticate,
 			schema: {
 				summary: "Responsável por criar um novo usuário",
 				description:
@@ -37,6 +39,7 @@ export const createUserRoute: FastifyPluginCallbackZod = (app) => {
 		},
 		async (request, reply) => {
 			const { name, email, cpf, password } = request.body;
+			console.log(request.user);
 
 			const result = await createUserService.execute({
 				name,

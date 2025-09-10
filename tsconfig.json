@@ -14,6 +14,7 @@
 		"paths": {
 			"@/*": ["src/*"]
 		},
+		"typeRoots": ["./src/types", "./node_modules/@types"],
 		"module": "nodenext",
 		"target": "es2024",
 		"noEmit": true,

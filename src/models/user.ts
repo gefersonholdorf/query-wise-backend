@@ -13,3 +13,9 @@ export interface CreateUser
 	extends Omit<User, "id" | "isActive" | "createdAt" | "updatedAt"> {}
 
 export interface UserDetail extends Omit<User, "password"> {}
+
+export interface UpdatedUser
+	extends Omit<
+		User,
+		"createdAt" | "updatedAt" | "cpf" | "email" | "password"
+	> {}

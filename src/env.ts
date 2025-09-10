@@ -3,6 +3,8 @@ import "dotenv/config";
 
 const envSchema = z.object({
 	PORT: z.coerce.number().default(3333),
+	SECRET_KEY: z.string(),
+	COOKIE_SECRET_KEY: z.string(),
 	OLLAMA_API_URL: z.url(),
 	OLLAMA_EMBEDDING_MODEL: z.string().default("mxbai-embed-large"),
 	EVOLUTION_URL: z.url(),

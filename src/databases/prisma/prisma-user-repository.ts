@@ -1,7 +1,7 @@
 /** biome-ignore-all lint/style/noNonNullAssertion: <"explanation"> */
 import type { FetchOfPagination } from "@/models/fetch-of-pagination";
 import type { PaginationParams } from "@/models/pagination-params";
-import type { CreateUser, UserDetail } from "@/models/user";
+import type { CreateUser, UpdatedUser, User, UserDetail } from "@/models/user";
 import { prisma } from "../db";
 import type { UserRepository } from "../repositories/user-repository";
 
@@ -18,7 +18,7 @@ export class PrismaUserRepository implements UserRepository {
 		};
 	}
 
-	async findByCpf(cpf: string): Promise<{ user: UserDetail } | null> {
+	async findByCpf(cpf: string): Promise<{ user: User } | null> {
 		const userWithCpf = await prisma.users.findUnique({
 			where: {
 				cpf,
@@ -29,12 +29,14 @@ export class PrismaUserRepository implements UserRepository {
 			return null;
 		}
 
-		const { id, created_at, email, is_active, name, updated_at } = userWithCpf;
+		const { id, created_at, email, is_active, name, updated_at, password } =
+			userWithCpf;
 
 		return {
 			user: {
 				id,
 				cpf,
+				password,
 				createdAt: created_at!,
 				email,
 				isActive: is_active!,
@@ -120,5 +122,21 @@ export class PrismaUserRepository implements UserRepository {
 		};
 
 		return result;
+	}
+
+	async save(updateUser: UpdatedUser): Promise<{ userId: number }> {
+		const userUpdated = await prisma.users.update({
+			where: {
+				id: updateUser.id,
+			},
+			data: {
+				name: updateUser.name,
+				is_active: updateUser.isActive,
+			},
+		});
+
+		return {
+			userId: userUpdated.id,
+		};
 	}
 }
