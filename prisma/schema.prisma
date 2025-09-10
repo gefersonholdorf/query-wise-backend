@@ -8,12 +8,88 @@ datasource db {
 }
 
 model users {
-  id         Int       @id @default(autoincrement())
-  name       String    @db.VarChar(255)
-  email      String    @unique(map: "email") @db.VarChar(255)
-  cpf        String    @unique(map: "cpf") @db.VarChar(14)
-  password   String    @db.VarChar(255)
-  is_active  Boolean?  @default(true)
-  created_at DateTime? @default(now()) @db.Timestamp(0)
-  updated_at DateTime? @default(now()) @db.Timestamp(0)
+  id            Int             @id @default(autoincrement())
+  name          String          @db.VarChar(255)
+  email         String          @unique(map: "email") @db.VarChar(255)
+  cpf           String          @unique(map: "cpf") @db.VarChar(14)
+  password      String          @db.VarChar(255)
+  is_active     Boolean?        @default(true)
+  created_at    DateTime?       @default(now()) @db.Timestamp(0)
+  updated_at    DateTime?       @default(now()) @db.Timestamp(0)
+  operator_logs operator_logs[]
+}
+
+model clients {
+  id         Int        @id @default(autoincrement())
+  name       String     @db.VarChar(255)
+  phone      String     @unique(map: "phone") @db.VarChar(20)
+  created_at DateTime   @default(now()) @db.Timestamp(0)
+  updated_at DateTime   @default(now()) @db.Timestamp(0)
+  sessions   sessions[]
+}
+
+model messages {
+  id          Int              @id @default(autoincrement())
+  session_id  Int
+  content     String           @db.Text
+  type        messages_type
+  status      messages_status? @default(pending)
+  response_id Int?
+  created_at  DateTime         @default(now()) @db.DateTime(0)
+  sessions    sessions         @relation(fields: [session_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "messages_ibfk_1")
+
+  @@index([session_id], map: "session_id")
+}
+
+model operator_logs {
+  id          Int                  @id @default(autoincrement())
+  operator_id Int
+  message_id  Int
+  action      operator_logs_action
+  created_at  DateTime?            @default(now()) @db.DateTime(0)
+  users       users                @relation(fields: [operator_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "operator_logs_ibfk_1")
+
+  @@index([operator_id], map: "operator_id")
+}
+
+model responses {
+  id         Int              @id @default(autoincrement())
+  content    String           @db.Text
+  source     responses_source
+  created_at DateTime         @default(now()) @db.DateTime(0)
+}
+
+model sessions {
+  id            Int        @id @default(autoincrement())
+  client_id     Int
+  started_at    DateTime?  @default(now()) @db.DateTime(0)
+  ended_at      DateTime?  @db.DateTime(0)
+  rag_enabled   Boolean?   @default(true)
+  greeting_sent Boolean?   @default(false)
+  messages      messages[]
+  clients       clients    @relation(fields: [client_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "sessions_ibfk_1")
+
+  @@index([client_id], map: "client_id")
+}
+
+enum responses_source {
+  RAG
+  operator
+}
+
+enum messages_type {
+  received
+  sent
+}
+
+enum operator_logs_action {
+  answered
+  updated
+  ignored
+}
+
+enum messages_status {
+  pending
+  answered
+  not_found
 }

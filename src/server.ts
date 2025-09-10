@@ -62,5 +62,6 @@ app.register(fastifyJwt, {
 httpCreateRoute(app);
 
 app.listen({
+	host: "0.0.0.0",
 	port: env.PORT,
 });
